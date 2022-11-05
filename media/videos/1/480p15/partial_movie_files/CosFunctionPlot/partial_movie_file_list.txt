@@ -1,0 +1,8 @@
+# This file is used internally by FFMPEG.
+file 'file:/home/felix/Desktop/Neuroinformatics/media/videos/1/480p15/partial_movie_files/CosFunctionPlot/598979775_2289366724_223132457.mp4'
+file 'file:/home/felix/Desktop/Neuroinformatics/media/videos/1/480p15/partial_movie_files/CosFunctionPlot/677644185_4045960536_3213815177.mp4'
+file 'file:/home/felix/Desktop/Neuroinformatics/media/videos/1/480p15/partial_movie_files/CosFunctionPlot/677644185_308359493_395672080.mp4'
+file 'file:/home/felix/Desktop/Neuroinformatics/media/videos/1/480p15/partial_movie_files/CosFunctionPlot/2828807490_4251515587_2831429693.mp4'
+file 'file:/home/felix/Desktop/Neuroinformatics/media/videos/1/480p15/partial_movie_files/CosFunctionPlot/3722076234_3487524235_648269269.mp4'
+file 'file:/home/felix/Desktop/Neuroinformatics/media/videos/1/480p15/partial_movie_files/CosFunctionPlot/3722076234_1159526345_1775462301.mp4'
+file 'file:/home/felix/Desktop/Neuroinformatics/media/videos/1/480p15/partial_movie_files/CosFunctionPlot/3722076234_125286499_992219427.mp4'

@@ -1,0 +1,5 @@
+# This file is used internally by FFMPEG.
+file 'file:/home/felix/Desktop/Neuroinformatics/media/videos/1/1080p60/partial_movie_files/DotProduct/450974505_3594316118_223132457.mp4'
+file 'file:/home/felix/Desktop/Neuroinformatics/media/videos/1/1080p60/partial_movie_files/DotProduct/34786186_125286499_3249372766.mp4'
+file 'file:/home/felix/Desktop/Neuroinformatics/media/videos/1/1080p60/partial_movie_files/DotProduct/34786186_3015360331_229288578.mp4'
+file 'file:/home/felix/Desktop/Neuroinformatics/media/videos/1/1080p60/partial_movie_files/DotProduct/34786186_125286499_1682650591.mp4'
