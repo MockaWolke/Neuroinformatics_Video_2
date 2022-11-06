@@ -116,10 +116,10 @@ class Task_B(VectorScene):
         formula = MathTex(r"""\hat{a} = \begin{bmatrix} cos(\frac{\pi}{4} ) & -sin(\frac{\pi}{4} ) \\ sin(\frac{\pi}{4} ) & cos(\frac{\pi}{4} )\end{bmatrix} \cdot a""").shift(UP * 3,RIGHT*3).scale(.8)
         self.play(Write(formula))
         self.play(Write(alpha),Write(pi))
-
+        self.wait(2)
         formula2 = MathTex(r"""\hat{a} = \begin{bmatrix} 0 & -1 \\ 1 & 0\end{bmatrix} \cdot a""").move_to(formula)
         self.play(Transform(formula,formula2))
-        self.remove(formula)
+        
         self.wait(2)
         alpha.tracker.set_value(0)
         self.play(Write(alpha))
@@ -136,15 +136,12 @@ class Task_B(VectorScene):
         beta_TEX = MathTex(r"\beta\,=\,\sqrt{2}").shift(UP*3,LEFT*3).move_to(alpha).shift(DOWN*1.5)
         self.play(Write(beta_TEX))
 
-        formula3 = MathTex(r"""\hat{a} = \begin{bmatrix} \sqrt{2} &  \\ 0 & \sqrt{2}\end{bmatrix} \cdot \begin{bmatrix} 0 & -1 \\ 1 & 0\end{bmatrix} \cdot a""").move_to(formula2).shift(RIGHT*0.3)
-        self.play(Transform(formula2,formula3))
-        self.add(formula3)
-        self.remove(formula2)
+        formula2 = MathTex(r"""\hat{a} = \begin{bmatrix} \sqrt{2} &  \\ 0 & \sqrt{2}\end{bmatrix} \cdot \begin{bmatrix} 0 & -1 \\ 1 & 0\end{bmatrix} \cdot a""").move_to(formula).shift(RIGHT*0.3)
+        self.play(Transform(formula,formula2))
         self.wait(2)
 
-        formula4 = MathTex(r"""\hat{a} = \begin{bmatrix} 0 & -\sqrt{2}  \\ \sqrt{2} & 0\end{bmatrix} \cdot a""").move_to(formula3)
-        self.play(Transform(formula3,formula4))
-        self.remove(formula4)
+        formula2 = MathTex(r"""\hat{a} = \begin{bmatrix} 0 & -\sqrt{2}  \\ \sqrt{2} & 0\end{bmatrix} \cdot a""").move_to(formula)
+        self.play(Transform(formula,formula2))
         self.wait(2)
 
         beta = Variable(1, r"\beta").move_to(beta_TEX)
@@ -168,25 +165,30 @@ class Task_B(VectorScene):
     
 
 
-    def start_situation(self):
-        v1 = self.add_vector([1,0],color = YELLOW)
-        l1 = self.label_vector(vector=v1,label=MathTex(r"a"))
-        c1 = v1.coordinate_label()
-        self.add(c1)
-        self.wait(1)
-        self.remove(c1)
-        v2 = self.add_vector([0,1],color = GREEN)
-        l2 = self.label_vector(vector=v2,label=MathTex(r"b"))
-        c2 = v2.coordinate_label()
-        self.add(c2)
-        self.wait(1)
-        self.remove(c2)
-        v3 = self.add_vector([.5,np.sqrt(3)*.5],color = BLUE)
-        l3 = self.label_vector(vector=v3,label=MathTex(r"v"))
-        c3 = v3.coordinate_label()
-        self.add(c3)
-        self.wait(1)
-        self.remove(c3)
+    def start_situation(self,show_labels = True,animate_labeling = True):
+        v1 = self.add_vector([1,0],color = YELLOW,animate=animate_labeling)
+        
+        l1 = self.label_vector(vector=v1,label=MathTex(r"a"),animate=animate_labeling)
+        if show_labels: 
+            c1 = v1.coordinate_label()
+            self.add(c1)
+            self.wait(1)
+            self.remove(c1)
+        v2 = self.add_vector([0,1],color = GREEN,animate=animate_labeling)
+        l2 = self.label_vector(vector=v2,label=MathTex(r"b"),animate=animate_labeling)
+        if show_labels: 
+            c2 = v2.coordinate_label()
+            self.add(c2)
+            self.wait(1)
+            self.remove(c2)
+
+        v3 = self.add_vector([.5,np.sqrt(3)*.5],color = BLUE,animate=animate_labeling)
+        l3 = self.label_vector(vector=v3,label=MathTex(r"v"),animate=animate_labeling)
+        if show_labels:
+            c3 = MathTex(r"\begin{bmatrix} \frac{1}{2} \\ \frac{\sqrt{3}}{2} \end{bmatrix} ").move_to([1.5,1.5,0])
+            self.add(c3)
+            self.wait(1)
+            self.remove(c3)
         return v1,v2,v3,l1,l2,l3
 
 
@@ -232,12 +234,10 @@ class Matrix_A_and_B(VectorScene):
 
         l1, l2, l3 = self.create_head_tracer(v1, v2, v3)
    
-        
+        vectors = VGroup(v1,v2,v3)     
 
         self.wait(1)        
-        self.play(Rotating(v1,radians=2 * PI,about_point= ORIGIN),
-        Rotating(v2,radians=2 * PI,about_point= ORIGIN),
-        Rotating(v3,radians=2 * PI,about_point= ORIGIN),
+        self.play(Rotating(vectors,radians=2 * PI,about_point= ORIGIN),
         alpha.tracker.animate.set_value(2),run_time = 6)
         self.wait(2)
 
@@ -266,15 +266,15 @@ class Matrix_A_and_B(VectorScene):
                 Transform(v2,sv2),
                 Transform(v3,sv3),
                 beta.tracker.animate.set_value(factor2),run_time = 6)
-
+        self.wait(2)
         alpha.tracker.set_value(0)
         alpha.next_to(beta,RIGHT)
         pi.next_to(alpha, RIGHT).shift(LEFT *.1) 
         
         self.play(FadeOut(v1,v2,v3,sv1,sv2,sv3,beta))
         beta.tracker.set_value(1)
-        v1, v2, v3, l1,l2,l3 = self.start_situation()
-
+        v1, v2, v3, l1,l2,l3 = self.start_situation(show_labels = False,animate_labeling = False)
+        self.wait(2)
         self.play(Write(alpha),Write(beta),Write(pi))
         self.play(FadeOut(l1,l2,l3))
 
@@ -307,25 +307,30 @@ class Matrix_A_and_B(VectorScene):
         l3.add_updater(lambda d: d.move_to([v3.get_end()[0]*1.2,v3.get_end()[1]*1.2,v3.get_end()[2]]))
         return l1,l2,l3
 
-    def start_situation(self):
-        v1 = self.add_vector([1,0],color = YELLOW)
-        l1 = self.label_vector(vector=v1,label=MathTex(r"a"))
-        c1 = v1.coordinate_label()
-        self.add(c1)
-        self.wait(1)
-        self.remove(c1)
-        v2 = self.add_vector([0,1],color = GREEN)
-        l2 = self.label_vector(vector=v2,label=MathTex(r"b"))
-        c2 = v2.coordinate_label()
-        self.add(c2)
-        self.wait(1)
-        self.remove(c2)
-        v3 = self.add_vector([.5,np.sqrt(3)*.5],color = BLUE)
-        l3 = self.label_vector(vector=v3,label=MathTex(r"v"))
-        c3 = v3.coordinate_label()
-        self.add(c3)
-        self.wait(1)
-        self.remove(c3)
+    def start_situation(self,show_labels = True,animate_labeling = True):
+        v1 = self.add_vector([1,0],color = YELLOW,animate=animate_labeling)
+        
+        l1 = self.label_vector(vector=v1,label=MathTex(r"a"),animate=animate_labeling)
+        if show_labels: 
+            c1 = v1.coordinate_label()
+            self.add(c1)
+            self.wait(1)
+            self.remove(c1)
+        v2 = self.add_vector([0,1],color = GREEN,animate=animate_labeling)
+        l2 = self.label_vector(vector=v2,label=MathTex(r"b"),animate=animate_labeling)
+        if show_labels: 
+            c2 = v2.coordinate_label()
+            self.add(c2)
+            self.wait(1)
+            self.remove(c2)
+
+        v3 = self.add_vector([.5,np.sqrt(3)*.5],color = BLUE,animate=animate_labeling)
+        l3 = self.label_vector(vector=v3,label=MathTex(r"v"),animate=animate_labeling)
+        if show_labels:
+            c3 = MathTex(r"\begin{bmatrix} \frac{1}{2} \\ \frac{\sqrt{3}}{2} \end{bmatrix} ").move_to([1.5,1.5,0])
+            self.add(c3)
+            self.wait(1)
+            self.remove(c3)
         return v1,v2,v3,l1,l2,l3
 
     def all_at_once(self,vector,factor,degree):
@@ -478,3 +483,19 @@ class ShowDotProcuct(VectorScene):
                 "stroke_width": 4,
                 "stroke_opacity": 0.3
             },animate=False).add_coordinates()
+
+
+
+class Test(LinearTransformationScene):
+    def __init__(self):
+        LinearTransformationScene.__init__(
+            self,
+            show_coordinates=True,
+            leave_ghost_vectors=True,
+        )
+
+    def construct(self):
+
+        matrix = [[2,0],[0,1]]
+        self.apply_matrix(matrix,run_time = 6)
+        self.wait()
