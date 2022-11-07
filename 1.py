@@ -199,7 +199,7 @@ class Task_B(VectorScene):
         self.play(Write(formula))
         self.play(Write(alpha),Write(pi))
         self.wait(2)
-        formula2 = MathTex(r"""\hat{a} = \begin{bmatrix} 0 & -1 \\ 1 & 0\end{bmatrix} \cdot a""").move_to(formula)
+        formula2 = MathTex(r"""\hat{a} = \begin{bmatrix} \frac{\sqrt{2}}{2} & -\frac{\sqrt{2}}{2} \\ \frac{\sqrt{2}}{2} & \frac{\sqrt{2}}{2}\end{bmatrix} \cdot a""").move_to(formula)
         self.play(Transform(formula,formula2))
         
         self.wait(2)

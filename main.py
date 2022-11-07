@@ -3,12 +3,65 @@ import numpy as np
 
 config.verbosity = "WARNING"
 
+background_line_style={
+                "stroke_color": TEAL,
+                "stroke_width": 4,
+                "stroke_opacity": 0.3
+            }
 
 
+class Intro(VectorScene):
+    def construct(self):
+
+        n = Tex("Neuroinformatics").shift(UP*3).scale(3)
+        g = Tex("Group 2 - Video 2").scale(2)
+        names = Tex("Alexandra Benova,  Felix Hammer,  Isabel Ritter, Fabia Segatz").shift(DOWN*3)
+        self.add(n,g,names)
+        self.wait(2)
+        self.play(FadeOut(n,g,names))
+
+        question = Tex(r"How can we turn any Vector in to any other?")
+        self.play(Write(question))
+        self.wait(2)
+        self.play(FadeOut(question))
+    
+        plane = self.add_plane(background_line_style=background_line_style,animate=True).add_coordinates()
+        
+        self.wait(2)
+        
 
 
+        v3 = self.add_vector([.5,np.sqrt(3)*.5],color = YELLOW,animate=True)
+        l3 = self.label_vector(vector=v3,label=MathTex(r"v"),animate=True)
+
+        #c3 = MathTex(r"\begin{bmatrix} \frac{1}{2} \\ \frac{\sqrt{3}}{2} \end{bmatrix} ").move_to([1.5,1.5,0])
+
+        # self.wait(1)
+        # self.remove(c3)
+        self.wait(2)
 
 
+        v4 = self.add_vector(np.array([-0.25881905,  0.96592583])*np.sqrt(2),color = GREEN,animate=True)
+        l4 = self.label_vector(vector=v4,label=MathTex(r"\hat{v}"),animate=True)
+
+
+        self.wait(2)
+        self.play(Transform(v3,v4),Transform(l3,l4))
+
+        self.wait(2)
+        v3 = self.add_vector([.5,np.sqrt(3)*.5],color = YELLOW,animate=True)
+        l3 = self.label_vector(vector=v3,label=MathTex(r"v"),animate=True)
+
+        m = MathTex(r"\hat{v}=  \begin{pmatrix} ? & ? \\ ? & ?\end{pmatrix} \cdot v}").shift(UP*3,RIGHT*3)
+        self.play(Write(m))
+        self.wait(2)
+        self.play(FadeOut(l3))
+
+        self.wait(1)
+        self.play(Rotating(v3,radians=PI/4,about_point=ORIGIN),run_time = 1)        
+        self.wait(2)
+        self.play(Transform(v3,v4))
+        self.wait(2)
 
 class ShowDotProduct(VectorScene):
     def construct(self):
@@ -26,11 +79,7 @@ class ShowDotProduct(VectorScene):
         
         self.play(FadeOut(head,m1,m2))
 
-        plane = self.add_plane(background_line_style={
-                "stroke_color": TEAL,
-                "stroke_width": 4,
-                "stroke_opacity": 0.3
-            },animate=False).add_coordinates()
+        plane = self.add_plane(background_line_style=background_line_style,animate=False).add_coordinates()
 
         
         a = self.add_vector([1,0],color = YELLOW)
@@ -87,6 +136,70 @@ class ShowDotProduct(VectorScene):
         self.play(Rotating(group,radians=1 * PI,about_point=ORIGIN))
         self.wait(2)
 
+class Bonus(Scene):
+
+    def construct(self):
+        head = Tex("Bonus - The underlying Mathetics").scale(1.7).shift(UP*3)
+        self.add(head)
+
+        self.wait(2)
+        new = MathTex(r"\langle B_{\beta} a , B_{\beta} b \rangle")
+        self.play(Write(new))
+
+        self.wait(2)
+
+        self.play(new.animate.shift(LEFT * 2))
+        new1 = MathTex(r"= \langle \beta \cdot \mathit{I}_2 a , \beta \cdot \mathit{I}_2 b \rangle").next_to(new,RIGHT)
+        self.play(Write(new1))
+        self.wait(2)
+        group_new = VGroup(new,new1)
+        self.play(group_new.animate.shift(LEFT * 2))
+        new2 = MathTex(r"= \langle \beta \cdot a , \beta \cdot b \rangle").next_to(group_new,RIGHT)
+        self.play(Write(new2))
+        self.wait(2)
+        group_new = group_new.add(new2)
+        self.play(group_new.animate.shift(LEFT))
+        new3 = MathTex(r"= \beta^2 \cdot \langle a , b \rangle").next_to(group_new,RIGHT)
+        self.play(Write(new3))
+        self.wait(2)
+
+        group_new = group_new.add(new3)
+        self.play(Transform(group_new,MathTex(r"\langle B_{\beta} a , B_{\beta} b \rangle = \beta^2 \cdot \langle a , b \rangle")))
+
+        self.wait(2)
+
+        self.play(Transform(group_new,MathTex(r"\langle A_{\alpha} a ,A_{\alpha} b \rangle")))
+
+        self.wait(2)
+        self.play(group_new.animate.shift(LEFT*2))
+        new = MathTex(r"=(A_{\alpha}a)^T \cdot A_{\alpha} b").next_to(group_new,RIGHT)
+        self.play(Write(new))
+        self.wait(2)
+        group_new = group_new.add(new)
+        self.play(group_new.animate.shift(LEFT*2))
+        new = MathTex(r"=a^T A_{\alpha}^T  A_{\alpha} b").next_to(group_new,RIGHT)
+        self.play(Write(new))
+        self.wait(2)
+        group_new = group_new.add(new)
+        self.play(group_new.animate.shift(LEFT*0.8))
+        new = MathTex(r"=a^T  b").next_to(group_new,RIGHT)
+        self.play(Write(new))
+        group_new = group_new.add(new)
+        self.wait(2)
+        self.play(Transform(group_new,MathTex(r"\langle A_{\alpha} a ,A_{\alpha} b \rangle = a^T  b")))
+        self.play(group_new.animate.shift(LEFT*1.5))
+        new = MathTex(r"=\langle  a , b \rangle").next_to(group_new,RIGHT)
+        self.play(Write(new))
+        self.wait(2)
+
+
+
+
+
+
+
+
+
 
 class B_Reverse(MovingCameraScene):
     def construct(self):
@@ -112,34 +225,34 @@ class B_Reverse(MovingCameraScene):
 
 
 
-        self.wait(2)
-        new = MathTex(r"\langle B_{\beta} a , B_{\beta} b \rangle").shift(RIGHT * 15)
-        self.add(new)
+        # self.wait(2)
+        # new = MathTex(r"\langle B_{\beta} a , B_{\beta} b \rangle").shift(RIGHT * 15)
+        # self.add(new)
 
-        self.play(self.camera.frame.animate.move_to(new))
-        self.wait(2)
+        # self.play(self.camera.frame.animate.move_to(new))
+        # self.wait(2)
 
-        self.play(new.animate.shift(LEFT * 2))
-        new1 = MathTex(r"= \langle \beta \cdot \mathit{I}_2 a , \beta \cdot \mathit{I}_2 b \rangle").next_to(new,RIGHT)
-        self.play(Write(new1))
-        self.wait(2)
-        group_new = VGroup(new,new1)
-        self.play(group_new.animate.shift(LEFT * 2))
-        new2 = MathTex(r"= \langle \beta \cdot a , \beta \cdot b \rangle").next_to(group_new,RIGHT)
-        self.play(Write(new2))
-        self.wait(2)
-        group_new = group_new.add(new2)
-        self.play(group_new.animate.shift(LEFT))
-        new3 = MathTex(r"= \beta^2 \cdot \langle a , b \rangle").next_to(group_new,RIGHT)
-        self.play(Write(new3))
-        self.wait(2)
+        # self.play(new.animate.shift(LEFT * 2))
+        # new1 = MathTex(r"= \langle \beta \cdot \mathit{I}_2 a , \beta \cdot \mathit{I}_2 b \rangle").next_to(new,RIGHT)
+        # self.play(Write(new1))
+        # self.wait(2)
+        # group_new = VGroup(new,new1)
+        # self.play(group_new.animate.shift(LEFT * 2))
+        # new2 = MathTex(r"= \langle \beta \cdot a , \beta \cdot b \rangle").next_to(group_new,RIGHT)
+        # self.play(Write(new2))
+        # self.wait(2)
+        # group_new = group_new.add(new2)
+        # self.play(group_new.animate.shift(LEFT))
+        # new3 = MathTex(r"= \beta^2 \cdot \langle a , b \rangle").next_to(group_new,RIGHT)
+        # self.play(Write(new3))
+        # self.wait(2)
 
-        group_new = group_new.add(new3)
-        self.play(Transform(group_new,MathTex(r"\langle B_{\beta} a , B_{\beta} b \rangle = \beta^2 \cdot \langle a , b \rangle").shift(RIGHT * 15)))
+        # group_new = group_new.add(new3)
+        # self.play(Transform(group_new,MathTex(r"\langle B_{\beta} a , B_{\beta} b \rangle = \beta^2 \cdot \langle a , b \rangle").shift(RIGHT * 15)))
 
-        self.wait(2)
+        # self.wait(2)
 
-        self.play(self.camera.frame.animate.move_to(ORIGIN))
+        # self.play(self.camera.frame.animate.move_to(ORIGIN))
         self.wait(2)
         self.play(Transform(formula, MathTex(r"B_{\beta} = \beta \cdot \mathit{I}_2") ))
 
@@ -232,7 +345,7 @@ class A_Reverse(MovingCameraScene):
         self.play(group.animate.shift(LEFT * 2))
 
         is_even = MathTex("=").next_to(group,RIGHT)
-        matrix = MathTex(r"\begin{pmatrix} cos(\alpha) & -sin(\alpha) \\ sin(\alpha) & cos(\alpha)\end{pmatrix} ").next_to(is_even,RIGHT)
+        matrix = MathTex(r"\begin{pmatrix} cos(\alpha) & sin(\alpha) \\ -sin(\alpha) & cos(\alpha)\end{pmatrix} ").next_to(is_even,RIGHT)
         new_group = VGroup(is_even,matrix)
 
         self.play(Write(new_group))
@@ -244,18 +357,17 @@ class A_Reverse(MovingCameraScene):
         self.play(self.camera.frame.animate.shift(19*RIGHT))
 
 
-        big = MathTex( r"\begin{pmatrix} cos(\alpha) & -sin(\alpha) \\ sin(\alpha) & cos(\alpha)\end{pmatrix} \cdot  \begin{pmatrix} cos(\alpha) & sin(\alpha) \\ -sin(\alpha) & cos(\alpha)\end{pmatrix} ").scale(0.7).move_to([19,0,0])
+        big = MathTex( r"\begin{pmatrix} cos(\alpha) & -sin(\alpha) \\ sin(\alpha) & cos(\alpha)\end{pmatrix} \cdot  \begin{pmatrix} cos(\alpha) & sin(\alpha) \\ -sin(\alpha) & cos(\alpha)\end{pmatrix} ").move_to([19,0,0])
         
         self.play(Create(big))
         self.wait(2)
         og_with = self.camera.frame_width
-        self.play(big.animate.next_to([19-(self.camera.frame_width*0.5)-2,0,0],RIGHT),self.camera.frame.animate.set(width=self.camera.frame_width*1.3))
-        bigr = MathTex( r"=\begin{pmatrix} cos(\alpha)^2 + sin(\alpha)^2  & \cos(\alpha) sin(\alpha) - \cos(\alpha)sin(\alpha) \\ \cos(\alpha) sin(\alpha) - \cos(\alpha)sin(\alpha) & \cos(\alpha)^2+  sin(\alpha)^2\end{pmatrix} ").scale(0.7).next_to(big,RIGHT)
+        bigr = MathTex( r"=\begin{pmatrix} cos(\alpha)^2 + sin(\alpha)^2  & \cos(\alpha) sin(\alpha) - \cos(\alpha)sin(\alpha) \\ \cos(\alpha) sin(\alpha) - \cos(\alpha)sin(\alpha) & \cos(\alpha)^2+  sin(\alpha)^2\end{pmatrix} ").move_to(big).shift(DOWN * 2)
         self.play(Create(bigr))
         self.wait(2)
-        self.play(Transform(bigr,MathTex( r"=\begin{pmatrix} 1 & \cos(\alpha) sin(\alpha) - \cos(\alpha)sin(\alpha) \\ \cos(\alpha) sin(\alpha) - \cos(\alpha)sin(\alpha) & 1\end{pmatrix} ").scale(0.7).next_to(big,RIGHT)))
+        self.play(Transform(bigr,MathTex( r"=\begin{pmatrix} 1 & \cos(\alpha) sin(\alpha) - \cos(\alpha)sin(\alpha) \\ \cos(\alpha) sin(\alpha) - \cos(\alpha)sin(\alpha) & 1\end{pmatrix} ").move_to(big).shift(DOWN * 2)))
         self.wait(2)
-        self.play(Transform(bigr,MathTex(r"= \begin{pmatrix} 1 &0 \\ 0 & 1\end{pmatrix}").scale(0.7).next_to(big,RIGHT)))
+        self.play(Transform(bigr,MathTex(r"= \begin{pmatrix} 1 &0 \\ 0 & 1\end{pmatrix}").move_to(big).shift(DOWN * 2)))
         self.wait(2)
 
        
@@ -417,15 +529,158 @@ class Transform_Matrix_A(LinearTransformationScene):
         self.apply_matrix(matrix,run_time = 6)
         self.wait()
 
+class Revision(VectorScene):
+
+    def construct(self):
+
+        head = Tex("Revision").scale(2).shift(UP*3)
+        self.add(head)
+
+        self.wait(2)
+        self.play(FadeOut(head))
+        self.wait(2)
+      
+
+        plane = self.add_plane(background_line_style=background_line_style,animate=False).add_coordinates()
+        alpha = Variable(0, r"\alpha").shift(LEFT * 6, UP * 3)
+        formula = MathTex(r""" \hat{a} = \begin{bmatrix} cos(\alpha) & -sin(\alpha) \\ sin(\alpha) & cos(\alpha)\end{bmatrix} \cdot a""").shift(UP * 3).to_corner(RIGHT)
+        v1, v2, v3, l1,l2,l3 = self.start_situation()
+
+        self.wait(2)
+   
+        pi = Tex(r"$\cdot\pi$",font_size = 80).next_to(alpha, RIGHT).shift(LEFT *.1) 
+        self.play(Write(alpha),Write(pi),Write(formula))
+
+        self.remove(l1,l2,l3)
+
+        l1, l2, l3 = self.create_head_tracer(v1, v2, v3)
+   
+        vectors = VGroup(v1,v2,v3)     
+
+        self.wait(1)        
+        self.play(Rotating(vectors,radians=2 * PI,about_point= ORIGIN),
+        alpha.tracker.animate.set_value(2),run_time = 6)
+        self.wait(2)
+
+        formula2 = MathTex(r"""\hat{a}= \begin{bmatrix} \beta & 0 \\ 0 & \beta\end{bmatrix} \cdot a""").move_to(formula)
+
+        beta = Variable(1, r"\beta").move_to(alpha)
+        self.play(TransformMatchingShapes(alpha,beta),FadeOut(pi),Transform(formula,formula2))
+        self.remove(alpha,pi)
+        self.add(beta)
+
+        
+        factor1 = 2.5
+        sv1,sv2,sv3 = map(lambda x: self.stretch_vector(x,factor1), [v1,v2,v3])
+
+        
+        self.play(Transform(v1,sv1),
+                Transform(v2,sv2),
+                Transform(v3,sv3),
+                beta.tracker.animate.set_value(factor1),run_time = 6)
+
+        self.remove(v1,v2,v3,l1,l2,l3)
+        v1,v2,v3 = sv1,sv2,sv3
+        factor2 = -1.7
+        sv1,sv2,sv3 = map(lambda x: self.stretch_vector(x,factor2/factor1), [v1,v2,v3])
+
+        
+        self.play(Transform(v1,sv1),
+                Transform(v2,sv2),
+                Transform(v3,sv3),
+                beta.tracker.animate.set_value(factor2),run_time = 6)
+        self.wait(2)
+        alpha.tracker.set_value(0)
+        alpha.next_to(beta,RIGHT)
+        pi.next_to(alpha, RIGHT).shift(LEFT *.1) 
+        
+        self.play(FadeOut(v1,v2,v3,sv1,sv2,sv3,beta))
+        beta.tracker.set_value(1)
+        v1, v2, v3, l1,l2,l3 = self.start_situation(show_labels = False,animate_labeling = False)
+        self.wait(2)
+        self.play(Write(alpha),Write(beta),Write(pi))
+        self.play(FadeOut(l1,l2,l3))
+
+        degree = .5
+        factor = 1.5
+
+        sv1,sv2,sv3 = map(lambda x: self.all_at_once(x,factor,degree), [v1,v2,v3])
+        self.play(Transform(v1,sv1),
+                Transform(v2,sv2),
+                Transform(v3,sv3),
+                beta.tracker.animate.set_value(factor),
+                alpha.tracker.animate.set_value(degree),
+                 run_time = 6)
+
+        l1 = self.label_vector(sv2,MathTex("\\hat{a}"),animate=False)
+        self.wait(2)
+
+
+    def create_head_tracer(self, v1, v2, v3):
+        l1 = self.label_vector(vector=v1,label=MathTex(r"\hat{a}"))
+        l2 = self.label_vector(vector=v2,label=MathTex(r"\hat{b}"))
+        l3 = self.label_vector(vector=v3,label=MathTex(r"\hat{v}"))
+
+        self.play(l1.animate.move_to([v1.get_end()[0]*1.2,v1.get_end()[1]*1.2,v1.get_end()[2]]),
+        l2.animate.move_to([v2.get_end()[0]*1.2,v2.get_end()[1]*1.2,v2.get_end()[2]]),
+        l3.animate.move_to([v3.get_end()[0]*1.2,v3.get_end()[1]*1.2,v3.get_end()[2]]))
+
+
+        l1.add_updater(lambda d: d.move_to([v1.get_end()[0]*1.2,v1.get_end()[1]*1.2,v1.get_end()[2]]))
+        l2.add_updater(lambda d: d.move_to([v2.get_end()[0]*1.2,v2.get_end()[1]*1.2,v2.get_end()[2]]))
+        l3.add_updater(lambda d: d.move_to([v3.get_end()[0]*1.2,v3.get_end()[1]*1.2,v3.get_end()[2]]))
+        return l1,l2,l3
+
+    def start_situation(self,show_labels = True,animate_labeling = True):
+        v1 = self.add_vector([1,0],color = YELLOW,animate=animate_labeling)
+        
+        l1 = self.label_vector(vector=v1,label=MathTex(r"a"),animate=animate_labeling)
+        if show_labels: 
+            c1 = v1.coordinate_label()
+            self.add(c1)
+            self.wait(1)
+            self.remove(c1)
+        v2 = self.add_vector([0,1],color = GREEN,animate=animate_labeling)
+        l2 = self.label_vector(vector=v2,label=MathTex(r"b"),animate=animate_labeling)
+        if show_labels: 
+            c2 = v2.coordinate_label()
+            self.add(c2)
+            self.wait(1)
+            self.remove(c2)
+
+        v3 = self.add_vector([.5,np.sqrt(3)*.5],color = BLUE,animate=animate_labeling)
+        l3 = self.label_vector(vector=v3,label=MathTex(r"v"),animate=animate_labeling)
+        if show_labels:
+            c3 = MathTex(r"\begin{bmatrix} \frac{1}{2} \\ \frac{\sqrt{3}}{2} \end{bmatrix} ").move_to([1.5,1.5,0])
+            self.add(c3)
+            self.wait(1)
+            self.remove(c3)
+        return v1,v2,v3,l1,l2,l3
+
+    def all_at_once(self,vector,factor,degree):
+        x,y = vector.get_end()[:2]
+        matrix = np.array([[np.cos(np.pi*degree),-np.sin(np.pi*degree)], [np.sin(np.pi*degree),np.cos(np.pi*degree)]])
+        new = matrix @ np.array([x,y]) * factor
+        
+        return Vector(new,color = vector.get_color())
+
+    def stretch_vector(self,vector,factor):
+
+        new_vector = Vector([i*factor for i in vector.get_end()[:2]],color = vector.get_color())
+        return new_vector
+
 
 class Matrix_A_and_B(VectorScene):
 
     def construct(self):
-        plane = self.add_plane(background_line_style={
-                "stroke_color": TEAL,
-                "stroke_width": 4,
-                "stroke_opacity": 0.3
-            },animate=False).add_coordinates()
+
+        head = Tex("Combining Both").scale(2).shift(UP*3)
+        self.add(head)
+
+        self.wait(2)
+        self.play(FadeOut(head))
+
+        plane = self.add_plane(background_line_style=background_line_style,animate=False).add_coordinates()
         alpha = Variable(0, r"\alpha").shift(LEFT * 6, UP * 3)
 
         v1, v2, v3, l1,l2,l3 = self.start_situation()
@@ -555,13 +810,18 @@ class Matrix_A_and_B(VectorScene):
 
 class Matrix_B(VectorScene):
     def construct(self):
-        plane = self.add_plane(background_line_style={
-                "stroke_color": TEAL,
-                "stroke_width": 4,
-                "stroke_opacity": 0.3
-            },animate=False).add_coordinates()
+
+        head = Tex("Scaling Matrices").scale(2).shift(UP*3)
+        self.add(head)
+
+        formula = MathTex(r"""B_{\beta}  = \begin{bmatrix} \beta & 0 \\ 0 & \beta\end{bmatrix} """)
+        self.play(Write(formula))
+        self.wait(2)
+        self.play(FadeOut(head,formula))
+
         beta = Variable(1, r"\beta").shift(UP*3,LEFT*3)
 
+        plane = self.add_plane(background_line_style=background_line_style,animate=False).add_coordinates()
         formula = MathTex(r"""B_{\beta} \cdot a = \begin{bmatrix} \beta & 0 \\ 0 & \beta\end{bmatrix} \cdot a""").shift(RIGHT * 3,UP*3)
         self.play(Write(formula))
         self.wait(2) 
@@ -572,7 +832,7 @@ class Matrix_B(VectorScene):
         l1 = self.label_vector(vector=v1,label=MathTex(r"a"))
         c1 = v1.coordinate_label()
         self.add(c1,l1)
-        self.wait(1)
+        self.wait(2)
         self.remove(c1,l1)
 
         v2 = Vector([5,0],color = GREEN)
@@ -599,11 +859,21 @@ class Matrix_B(VectorScene):
 class Matrix_A(VectorScene):
 
     def construct(self):
-        plane = self.add_plane(background_line_style={
-                "stroke_color": TEAL,
-                "stroke_width": 4,
-                "stroke_opacity": 0.3
-            },x_range = [-1.5,1.5],y_range = [-1.5,1.5] ,animate=False).add_coordinates()
+
+        head = Tex("Rotational Matrices").scale(2).shift(UP*3)
+        self.add(head)
+
+
+
+        formula = MathTex(r"""A_{\alpha} =  \begin{bmatrix} cos(\alpha) & -sin(\alpha) \\ sin(\alpha) & cos(\alpha)\end{bmatrix} """)
+        self.play(Write(formula))
+        self.wait(2)
+        self.play(formula.animate.shift(LEFT * 2))
+        alpha =  MathTex(r", \alpha = degree/360 * 2 \pi").next_to(formula,RIGHT)
+        self.play(Write(alpha))
+        self.play(FadeOut(head,formula,alpha))
+
+        plane = self.add_plane(background_line_style=background_line_style,x_range = [-1.5,1.5],y_range = [-1.5,1.5] ,animate=True).add_coordinates()
         alpha = Variable(0, r"\alpha").shift(LEFT * 6)
 
         formula = MathTex(r"""A_{\alpha} \cdot a = \begin{bmatrix} cos(\alpha) & -sin(\alpha) \\ sin(\alpha) & cos(\alpha)\end{bmatrix} \cdot a""").shift(UP * 3)
@@ -635,14 +905,217 @@ class Matrix_A(VectorScene):
         self.play(Rotating(vector2,radians=2 * PI,about_point= ORIGIN),alpha.tracker.animate.set_value(2),run_time = 6)
         self.wait(2)
 
+class Task_B_and_C(VectorScene):
+    def construct(self):
+
+        head = Tex("Combining Both").scale(2).shift(UP*3)
+        self.add(head)
+
+        self.wait(2)
+        f = MathTex(r"\alpha = \pi * 0.25, \beta = \sqrt{2}")
+        self.play(Write(f))
+        self.wait(2)
+        self.play(FadeOut(head,f))
+        self.wait(2)
+      
+        plane = self.add_plane(background_line_style=background_line_style,animate=False).add_coordinates()
+
+        circle = Circle(radius=1)
+
+        self.add(circle)
+
+        v1,v2,v3,l1,l2,l3 = self.start_situation(animate_labeling=False,show_labels=False)
+
+
+        self.wait(2)
+        alpha = Variable(.25, r"\alpha").shift(LEFT * 6, UP * 3)
+        pi = Tex(r"$\cdot\pi$",font_size = 80).next_to(alpha, RIGHT).shift(LEFT *.1) 
+
+        self.remove(l1,l2,l3)
+
+        l1, l2, l3 = self.create_head_tracer(v1, v2, v3)
+   
+        degree = 0.25        
+
+        # noch nicht rotiert
+
+        formula = MathTex(r"""\hat{a} = \begin{bmatrix} cos(\frac{\pi}{4} ) & -sin(\frac{\pi}{4} ) \\ sin(\frac{\pi}{4} ) & cos(\frac{\pi}{4} )\end{bmatrix} \cdot a""").shift(UP * 3,RIGHT*3).to_corner(RIGHT)
+        self.play(Write(formula))
+        self.play(Write(alpha),Write(pi))
+        self.wait(2)
+        formula2 = MathTex(r"""\hat{a} = \begin{bmatrix} \frac{\sqrt{2}}{2} & -\frac{\sqrt{2}}{2} \\ \frac{\sqrt{2}}{2} & \frac{\sqrt{2}}{2}\end{bmatrix} \cdot a""").move_to(formula)
+        self.play(Transform(formula,formula2))
+        
+        self.wait(2)
+        alpha.tracker.set_value(0)
+        self.play(Write(alpha))
+
+
+
+        self.wait(1)        
+        self.play(Rotating(v1,radians=degree* PI,about_point= ORIGIN),
+        Rotating(v2,radians=degree* PI,about_point= ORIGIN),
+        Rotating(v3,radians=degree* PI,about_point= ORIGIN),
+        alpha.tracker.animate.set_value(degree),run_time = 6)
+        self.wait(2)
+
+        beta_TEX = MathTex(r"\beta\,=\,\sqrt{2}").shift(UP*3,LEFT*3).move_to(alpha).shift(DOWN*1.5)
+        self.play(Write(beta_TEX))
+
+        # formula2 = MathTex(r"""\hat{\hat{a}} = \begin{bmatrix} \sqrt{2} &  \\ 0 & \sqrt{2}\end{bmatrix} \cdot \begin{bmatrix} 0 & -1 \\ 1 & 0\end{bmatrix} \cdot \hat{a}""").move_to(formula).shift(RIGHT*0.3)
+        # self.play(Transform(formula,formula2))
+        # self.wait(2)
+
+        formula2 = MathTex(r"""\hat{\hat{a}} = \begin{bmatrix} \sqrt{2} & 0  \\ 0 & \sqrt{2}\end{bmatrix} \cdot \hat{a}""").move_to(formula)
+        self.play(Transform(formula,formula2))
+        self.wait(2)
+
+        beta = Variable(1, r"\beta").move_to(beta_TEX)
+        self.play(FadeOut(beta_TEX,l1,l2,l3),Write(beta))
+        self.wait(2)
+
+        sv1,sv2,sv3 = map(lambda x: stretch_vector(x,np.sqrt(2)),[v1,v2,v3])
+
+        circle2 = Circle(radius=np.sqrt(2))
+
+        self.play(Transform(v1,sv1),
+                Transform(v2,sv2),
+                Transform(v3,sv3),
+                Transform(circle,circle2),
+                beta.tracker.animate.set_value(np.sqrt(2)),
+                 run_time = 4)
+
+        self.wait(2)
+
+        self.play(FadeOut(plane,alpha,beta,formula,v1,v2,v3,circle,pi))
+
+        self.play(FadeIn(head))
+
+        self.wait(2)
+        formula = MathTex(r"""\hat{a} = \begin{bmatrix} \sqrt{2} & 0 \\ 0 & \sqrt{2}\end{bmatrix} \cdot \begin{bmatrix} \frac{\sqrt{2}}{2} & -\frac{\sqrt{2}}{2} \\ \frac{\sqrt{2}}{2} & \frac{\sqrt{2}}{2}\end{bmatrix} \cdot a""")
+        self.play(Write(formula))
+
+        self.wait(2)
+        formula2 = MathTex(r"""\hat{a} = \begin{bmatrix} 1&-1 \\ 1 & 1\end{bmatrix} \cdot a""")
+        self.play(Transform(formula,formula2))
+        self.wait(2)
+
+        self.play(formula.animate.shift(UP*3,RIGHT*3),FadeOut(head))
+
+        plane = self.add_plane(background_line_style=background_line_style,animate=False).add_coordinates()
+
+        circle = Circle(radius=1)
+        alpha = Variable(0, r"\alpha").shift(LEFT * 6, UP * 3)
+        beta = Variable(1, r"\beta").move_to(alpha).shift(DOWN*1.5)
+        pi = Tex(r"$\cdot\pi$",font_size = 80).next_to(alpha, RIGHT).shift(LEFT *.1) 
+
+
+        self.play(Create(circle),Write(alpha),Write(beta),Write(pi))
+        v1,v2,v3,l1,l2,l3 = self.start_situation(animate_labeling=False,show_labels=False)
+
+        self.wait(2)
+
+
+        degree = 0.25
+        factor = np.sqrt(2)
+
+        sv1,sv2,sv3 = map(lambda x: self.all_at_once(x,factor,degree), [v1,v2,v3])
+
+        cv1,cv2,cv3 = v1.copy(),v2.copy(),v3.copy() 
+        self.remove(l1,l2,l3)
+        self.create_head_tracer(v1,v2,v3)
+        self.play(Transform(v1,sv1),
+                Transform(v2,sv2),
+                Transform(v3,sv3),
+                beta.tracker.animate.set_value(factor),
+                alpha.tracker.animate.set_value(degree),
+                Transform(circle,Circle(np.sqrt(2))),
+                 run_time = 4)
+
+        self.wait(2)
+
+        self.play(Transform(formula, MathTex(r"""a = \begin{bmatrix} ? & ?  \\ ? & ?\end{bmatrix} \cdot \hat{a}""").move_to(formula)))
+
+        self.wait(2)
+
+        self.play(Transform(formula, MathTex(r"""a = A_{-\alpha} \cdot B_{\frac{1}{\beta}} \cdot \hat{a}""").move_to(formula)))
+        self.wait(2)
+        self.play(Transform(v1,cv1),
+                    Transform(v2,cv2),
+                    Transform(v3,cv3),
+                    beta.tracker.animate.set_value(1),
+                    alpha.tracker.animate.set_value(0),
+                    Transform(circle,Circle(1)),
+                    run_time = 4)
+
+        self.wait(2)
+
+
+    
+    
+    def all_at_once(self,vector,factor,degree):
+        x,y = vector.get_end()[:2]
+        matrix = np.array([[np.cos(np.pi*degree),-np.sin(np.pi*degree)], [np.sin(np.pi*degree),np.cos(np.pi*degree)]])
+        new = matrix @ np.array([x,y]) * factor
+        
+        return Vector(new,color = vector.get_color())
+
+
+    def start_situation(self,show_labels = True,animate_labeling = True):
+        v1 = self.add_vector([1,0],color = YELLOW,animate=animate_labeling)
+        
+        l1 = self.label_vector(vector=v1,label=MathTex(r"a"),animate=animate_labeling)
+        if show_labels: 
+            c1 = v1.coordinate_label()
+            self.add(c1)
+            self.wait(1)
+            self.remove(c1)
+        v2 = self.add_vector([0,1],color = GREEN,animate=animate_labeling)
+        l2 = self.label_vector(vector=v2,label=MathTex(r"b"),animate=animate_labeling)
+        if show_labels: 
+            c2 = v2.coordinate_label()
+            self.add(c2)
+            self.wait(1)
+            self.remove(c2)
+
+        v3 = self.add_vector([.5,np.sqrt(3)*.5],color = BLUE,animate=animate_labeling)
+        l3 = self.label_vector(vector=v3,label=MathTex(r"v"),animate=animate_labeling)
+        if show_labels:
+            c3 = MathTex(r"\begin{bmatrix} \frac{1}{2} \\ \frac{\sqrt{3}}{2} \end{bmatrix} ").move_to([1.5,1.5,0])
+            self.add(c3)
+            self.wait(1)
+            self.remove(c3)
+        return v1,v2,v3,l1,l2,l3
+
+
+    def create_head_tracer(self, v1, v2, v3):
+        l1 = self.label_vector(vector=v1,label=MathTex(r"\hat{a}"))
+        l2 = self.label_vector(vector=v2,label=MathTex(r"\hat{b}"))
+        l3 = self.label_vector(vector=v3,label=MathTex(r"\hat{v}"))
+
+        self.play(l1.animate.move_to([v1.get_end()[0]*1.2,v1.get_end()[1]*1.2,v1.get_end()[2]]),
+        l2.animate.move_to([v2.get_end()[0]*1.2,v2.get_end()[1]*1.2,v2.get_end()[2]]),
+        l3.animate.move_to([v3.get_end()[0]*1.2,v3.get_end()[1]*1.2,v3.get_end()[2]]))
+
+        l1.add_updater(lambda d: d.move_to([v1.get_end()[0]*1.2,v1.get_end()[1]*1.2,v1.get_end()[2]]))
+        l2.add_updater(lambda d: d.move_to([v2.get_end()[0]*1.2,v2.get_end()[1]*1.2,v2.get_end()[2]]))
+        l3.add_updater(lambda d: d.move_to([v3.get_end()[0]*1.2,v3.get_end()[1]*1.2,v3.get_end()[2]]))
+        return l1,l2,l3
         
 class Task_B(VectorScene):
     def construct(self):
-        plane = self.add_plane(background_line_style={
-                "stroke_color": TEAL,
-                "stroke_width": 4,
-                "stroke_opacity": 0.3
-            },animate=False).add_coordinates()
+
+        head = Tex("Combining Both").scale(2).shift(UP*3)
+        self.add(head)
+
+        self.wait(2)
+        f = MathTex(r"\alpha = \pi * 0.25, \beta = \sqrt{2}")
+        self.play(Write(f))
+        self.wait(2)
+        self.play(FadeOut(head,f))
+        self.wait(2)
+      
+        plane = self.add_plane(background_line_style=background_line_style,animate=False).add_coordinates()
 
         circle = Circle(radius=1)
 
@@ -667,7 +1140,7 @@ class Task_B(VectorScene):
         self.play(Write(formula))
         self.play(Write(alpha),Write(pi))
         self.wait(2)
-        formula2 = MathTex(r"""\hat{a} = \begin{bmatrix} 0 & -1 \\ 1 & 0\end{bmatrix} \cdot a""").move_to(formula)
+        formula2 = MathTex(r"""\hat{a} = \begin{bmatrix} \frac{\sqrt{2}}{2} & -\frac{\sqrt{2}}{2} \\ \frac{\sqrt{2}}{2} & \frac{\sqrt{2}}{2}\end{bmatrix} \cdot a""").move_to(formula)
         self.play(Transform(formula,formula2))
         
         self.wait(2)
@@ -766,11 +1239,7 @@ def stretch_vector(vector,factor):
 
 class Test(VectorScene):
     def construct(self):
-        plane = self.add_plane(background_line_style={
-                "stroke_color": TEAL,
-                "stroke_width": 4,
-                "stroke_opacity": 0.3
-            },x_range = [-1.5,1.5],y_range = [-1.5,1.5] ,animate=False).add_coordinates()
+        plane = self.add_plane(background_line_style=background_line_style,x_range = [-1.5,1.5],y_range = [-1.5,1.5] ,animate=False).add_coordinates()
         alpha = Variable(0, r"\alpha").shift(LEFT * 6)
 
         formula = MathTex(r"""A_{\alpha} \cdot a = \begin{bmatrix} cos(\alpha) & -sin(\alpha) \\ sin(\alpha) & cos(\alpha)\end{bmatrix} \cdot a""").shift(UP * 3)
