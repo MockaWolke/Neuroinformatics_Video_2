@@ -1,3 +1,0 @@
-# This file is used internally by FFMPEG.
-file 'file:/home/felix/Desktop/Neuroinformatics/media/videos/1/1080p60/partial_movie_files/Transform_Matrix_A/450974505_3643042822_2699347017.mp4'
-file 'file:/home/felix/Desktop/Neuroinformatics/media/videos/1/1080p60/partial_movie_files/Transform_Matrix_A/34786186_329969645_1047302693.mp4'

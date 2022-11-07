@@ -44,10 +44,92 @@ class Matrix_B(VectorScene):
         self.remove(l3,v2,c3)
         self.wait(2)
         
+class Test2(Scene):
+    def construct(self):
 
+        f1 = MathTex(r"A_{\alpha} \cdot a = ").shift(UP*2,LEFT*3.5)
+        f2= MathTex(r"[").scale(2.6).next_to(f1)
+        f3= MathTex(r"]").scale(2.6).next_to(f2).shift(RIGHT * 2.5)
+        f4= MathTex(r"\cdot a").next_to(f3)
+        tl = DecimalNumber(0).next_to(f2).align_to(f2,UP).shift(DOWN * 0.2)
+        bl = DecimalNumber(-1).next_to(f2).align_to(f2,DOWN).shift(UP * 0.2)
+        tr = DecimalNumber(1).next_to(f3,LEFT).align_to(f2,UP).shift(DOWN * 0.2)
+        br = DecimalNumber(0).next_to(f3,LEFT).align_to(f2,DOWN).shift(UP * 0.2)
+        group = VGroup(f1,f2,f3,f4,tl,bl,tr,br)
+        alpha = Variable(0, r"\alpha").shift(LEFT * 6)
+
+        # tl.add_updater(lambda x: x.set_value(np.cos(alpha.tracker.get_value()*np.pi)))
+        # bl.add_updater(lambda x: x.set_value(np.sin(alpha.tracker.get_value()*np.pi)))
+        # tr.add_updater(lambda x: x.set_value(-np.sin(alpha.tracker.get_value()*np.pi)))
+        # br.add_updater(lambda x: x.set_value(np.cos(alpha.tracker.get_value()*np.pi)))
+
+        self.play(Write(group))
+        nums = 120
+        ar = np.linspace(0,2,num = nums)
+
+        self.wait(1)        
+        for val in ar:
+            self.play(alpha.tracker.animate.set_value(val),
+            tl.animate.set_value(np.cos(np.pi*val)),
+            bl.animate.set_value(np.sin(np.pi*val)),
+            tr.animate.set_value(-np.sin(np.pi*val)),
+            br.animate.set_value(np.co(np.pi*val)),
+            run_time = 6/nums)
+        self.wait(2)
+
+class Test(VectorScene):
+    def construct(self):
+        plane = self.add_plane(background_line_style={
+                "stroke_color": TEAL,
+                "stroke_width": 4,
+                "stroke_opacity": 0.3
+            },x_range = [-1.5,1.5],y_range = [-1.5,1.5] ,animate=False).add_coordinates()
+        alpha = Variable(0, r"\alpha").shift(LEFT * 6)
+
+        formula = MathTex(r"""A_{\alpha} \cdot a = \begin{bmatrix} cos(\alpha) & -sin(\alpha) \\ sin(\alpha) & cos(\alpha)\end{bmatrix} \cdot a""").shift(UP * 3)
+        self.play(Write(formula))
+
+        vector1 = self.add_vector([1,0],color = YELLOW)
+        vector2 = Vector([1,0],color=GREEN)
+
+        self.wait(2)
+   
+        pi = Tex(r"$\cdot\pi$",font_size = 80).next_to(alpha, RIGHT).shift(LEFT *.1) 
+        l1 = self.label_vector(vector=vector1,label=MathTex(r"a"))
+        c1 = vector1.coordinate_label()
+        self.add(c1)
+        self.wait(1)
+        self.remove(c1)
+
+        self.add(alpha,pi)
+        self.play(Transform(vector1,vector2))
+        self.add(vector2)
+        self.remove(l1,vector1)
+        label = self.label_vector(vector=vector2,label=MathTex(r"\hat{a}"))
+        label.add_updater(lambda d: d.move_to([vector2.get_end()[0]*1.2,vector2.get_end()[1]*1.2,vector2.get_end()[2]]))
+    
+        nums = 100
+        ar = np.linspace(0,2,num = nums)
+        self.play(Transform(formula,self.get_matrix(0)))
+        
+        self.wait(1)
+
+        for val in ar:
+            self.play(alpha.tracker.animate.set_value(val),
+            Rotating(vector2,radians=2 * PI / nums,about_point= ORIGIN),
+            Transform(formula,self.get_matrix(val)),
+            run_time = 6/nums)
+        self.wait(2)
+
+    def get_matrix(self,alpha):
+
+        vals = [np.cos(np.pi*alpha),-np.sin(np.pi*alpha),np.sin(np.pi*alpha),np.cos(np.pi*alpha)]
+        vals = np.round(vals,decimals=2)
+
+        matrix = MathTex(r"""\begin{bmatrix} cos(%s) & -sin(%s) \\ sin(%s) & cos(%s)\end{bmatrix}"""% (vals[0],vals[1],vals[2],vals[3])).shift(UP * 3) 
+        return matrix
 
 class Matrix_A(VectorScene):
-
     def construct(self):
         plane = self.add_plane(background_line_style={
                 "stroke_color": TEAL,
@@ -475,27 +557,6 @@ class DotProduct(Scene):
         self.wait(2)
 
 
-class ShowDotProcuct(VectorScene):
-    def construct(self):
-        
-        plane = self.add_plane(background_line_style={
-                "stroke_color": TEAL,
-                "stroke_width": 4,
-                "stroke_opacity": 0.3
-            },animate=False).add_coordinates()
 
 
 
-class Test(LinearTransformationScene):
-    def __init__(self):
-        LinearTransformationScene.__init__(
-            self,
-            show_coordinates=True,
-            leave_ghost_vectors=True,
-        )
-
-    def construct(self):
-
-        matrix = [[2,0],[0,1]]
-        self.apply_matrix(matrix,run_time = 6)
-        self.wait()
